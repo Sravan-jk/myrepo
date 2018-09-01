@@ -1,0 +1,51 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "creating vpc and n/w with cf",
+    "Parameters": 
+    {
+        "mycidr": 
+        {
+            "Description": "giving cidr block",
+            "Type": "String",
+            "Default": "192.168.0.0/16"
+        },
+        "publicsubnet": 
+        {
+            "Description": "creating public subnet",
+            "Type": "String",
+            "Default": "192.168.0.0/24"
+        }
+    },
+    "Resources":
+    {
+        "myvpc": 
+        {
+            "Description": "creating a new vpc from cf",
+            "Type": "AWS::EC2::VPC",
+            "Properties": 
+            {
+                "CidrBlock": { "Ref": "mycidr" },
+                "EnableDnsHostnames": "true"
+            }
+        },
+
+        "mysubnet": 
+        {
+            "Description": "first public subnet",
+            "Type": "AWS::EC2::Subnet",
+            "Properties": 
+            {
+                "AvailabilityZone": "us-east-1a",
+                "CidrBlock": { "Ref": "publicsubnet" },
+                "MapPublicIpOnLaunch": "true",
+                "VpcId":{"Ref": "myvpc"}
+            }
+        }
+    },
+    
+    "Outputs":  
+    {
+        "vpc" : {"Value" : { "Ref": "myvpc" }},
+        "subnet" : {"Value" : { "Ref": "mysubnet" }}
+    }
+}   

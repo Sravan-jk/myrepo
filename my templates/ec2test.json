@@ -1,0 +1,19 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "testing ec2 with cf",
+    "Resources": 
+    {
+        "testec2": 
+        {
+            "Type": "AWS::EC2::Instance",
+            "Properties": 
+            {
+                "KeyName": "Chef",
+                "ImageId": "ami-6cd6f714",
+                "InstanceType": "t2.micro",
+                "SecurityGroupIds" : ["sg-0b12aa78"]
+            }
+        }
+    }
+}
+

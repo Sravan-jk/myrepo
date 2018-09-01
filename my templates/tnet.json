@@ -1,0 +1,54 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "new vpc with diff value",
+    "Parameters":
+    {
+        "freevpc": 
+        {
+            "Description": "vpc",
+            "Type": "String",
+            "Default": "10.10.0.0/16"
+        },
+
+        "freesub":
+        {
+            "Description": "subnet",
+            "Type": "String",
+            "Default": "10.10.0.0/24"
+        }
+    },
+
+    "Resources":
+    {
+        
+        "newvpc": 
+        {
+            "Description": "mynewvpc",
+            "Type": "AWS::EC2::VPC",
+            "Properties":
+            {
+            "CidrBlock" : { "Ref": "freevpc" },
+            "EnableDnsHostnames" : "true"
+            }
+        },
+
+        "newsub":
+        {
+            "Description": "newsub",
+            "Type": "AWS::EC2::Subnet",
+            "Properties":
+            {
+                "VpcId" : { "Ref" : "newvpc" },
+                "CidrBlock" : { "Ref": "freesub" },
+                "AvailabilityZone" : "us-east-1a"
+            }
+        }
+    },
+    
+    "Outputs":
+    {
+        
+        "vpc" : {"Value" :{ "Ref": "newvpc" }},
+        "subnet" : {"Value" : { "Ref": "newsub" }}
+    }
+}

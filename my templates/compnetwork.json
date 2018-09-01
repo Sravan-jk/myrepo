@@ -1,0 +1,79 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "creating vpc and n/w with cf",
+    "Resources":
+    {
+        "Routetable": 
+        {
+            "Description": "Creating RT",
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": 
+            {
+                "VpcId" : { "Ref": "mycidr" }
+
+            }
+        },
+        "myINGWY": 
+        {
+            "Description": "creating igwy",
+            "Type": "AWS::EC2::InternetGateway",
+        },
+        
+        "vpcigwy": 
+        {
+            "Description": "attaching igwy to vpc",
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Properties":
+            {
+                "VpcId" : { "Ref": "mycidr" },
+                "InternetGatewayId": { "Ref": "myINGWY" }
+            }
+        },
+        
+        "RouteTable": 
+        {  
+            "Description": "Creating RT",
+            "Type" : "AWS::EC2::Route",
+            "DependsOn" : "GatewayToInternet",
+            "Properties" : 
+            {
+                "RouteTableId" : { "Ref" : "Routetable" },
+                "DestinationCidrBlock" : "0.0.0.0/0",
+                "GatewayId" : { "Ref" : "myINGWY" }
+            }
+        },
+        "Securitygroup":
+        {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : 
+            {
+                "GroupName" : "mysg",
+                "GroupDescription" : "mysgg",
+                "VpcId" : { "Ref": "mycidr" }
+            }
+        },
+        
+        "Ec2": 
+        {
+            "Description": "creating ec2",
+            "Type": "AWS::EC2::Instance",
+            "Properties":
+            {
+                "AvailabilityZone" : "us-west-1a",
+                "ImageId" : "ami-51537029",
+                "InstanceType" : "t2.micro",
+                "NetworkInterfaces": 
+                [ {
+                    "AssociatePublicIpAddress": "true",
+                    "DeviceIndex": "0",
+                    "GroupSet": [{ "Ref" : "mysg" }],
+                    "SubnetId": { "Ref" : "mysubnet" }
+                } ],
+                "SecurityGroupIds" : [{ "Ref": "mysg" }],
+                "SubnetId" : { "Ref": "mysubnet" },
+            }
+        }
+        
+        
+    }
+}
