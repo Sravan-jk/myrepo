@@ -1,6 +1,31 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "testing ec2 with cf",
+    "Parameters":
+    {
+        "cidrvpc": 
+        {
+            "Description": "cidr range for vpc",
+            "Type": "String",
+            "Default": "10.25.0.0/16",
+            "AllowedValues": ["10.25.0.0/16","192.168.0.0/16"]
+        },
+        "cidrsubnet": 
+        {
+            "Description": "cidr range for subnet",
+            "Type": "String",
+            "Default": "10.25.0.0/24",
+            "AllowedValues":["10.25.0.0/24","192.168.0.0/24"]
+        },
+        "subnetAZ": 
+        {
+            "Description": "AZ for Subnet",
+            "Type": "String",
+            "Default": "us-east-2a",
+            "AllowedValues":["us-east-2a","us-east-2b","us-east-2c"]
+        }
+        
+    },
     "Resources":
     {
         "myvpc": 
@@ -9,9 +34,9 @@
             "Type": "AWS::EC2::VPC",
             "Properties":
             {
-                "CidrBlock" : "192.168.0.0/16",
-                "EnableDnsSupport" : "true",
-                "EnableDnsHostnames" : "true"
+                "CidrBlock" : { "Ref": "cidrvpc" },
+                "EnableDnsSupport" : true,
+                "EnableDnsHostnames" : true
             }
         },
         "mysubnet": 
@@ -20,13 +45,14 @@
             "Type": "AWS::EC2::Subnet",
             "Properties":
             {
-                "AvailabilityZone" : "us-east-1a",
-                "CidrBlock" : "192.168.0.0/24",
-                "MapPublicIpOnLaunch" : "true",
+                "AvailabilityZone" : { "Ref": "subnetAZ" },
+                "CidrBlock" : { "Ref": "cidrsubnet" },
+                "MapPublicIpOnLaunch" : true,
                 "VpcId" : { "Ref": "myvpc" }
             }
     
         }
+
     },
     "Outputs":
     {
