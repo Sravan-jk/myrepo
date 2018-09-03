@@ -155,6 +155,10 @@
         "SubnetID" : 
         {
           "Value" : { "Ref": "mysubnet" }
+        },
+        "PublicIP" : 
+        {
+          "Value" : {"Fn::GetAtt" : [ "awsec2" , "PublicIp" ]}
         }
     }
 }
