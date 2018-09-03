@@ -1,0 +1,42 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "testing ec2 with cf",
+    "Resources":
+    {
+        "myvpc": 
+        {
+            "Description": "Its a new vpc",
+            "Type": "AWS::EC2::VPC",
+            "Properties":
+            {
+                "CidrBlock" : "192.168.0.0/16",
+                "EnableDnsSupport" : "true",
+                "EnableDnsHostnames" : "true"
+            }
+        },
+        "mysubnet": 
+        {
+            "Description": "its a new public subnet",
+            "Type": "AWS::EC2::Subnet",
+            "Properties":
+            {
+                "AvailabilityZone" : "us-east-1a",
+                "CidrBlock" : "192.168.0.0/24",
+                "MapPublicIpOnLaunch" : "true",
+                "VpcId" : { "Ref": "myvpc" }
+            }
+    
+        }
+    },
+    "Outputs":
+    {
+        "VpcID" : 
+        {
+        "Value" : { "Ref": "myvpc" }
+        },
+        "SubnetID" : 
+        {
+          "Value" : { "Ref": "mysubnet" }
+        }
+    }
+}
