@@ -71,13 +71,13 @@
                 "VpcId" : { "Ref": "myvpc" }
             }
         },
-        "newsubnet": 
+        "prisubnet": 
         {
           "Description": "its a new private subnet",
           "Type": "AWS::EC2::Subnet",
           "Properties": 
           {
-            "AvailabilityZone": "us-east-1b",
+            "AvailabilityZone": "us-east-2b",
             "VpcId": { "Ref": "myvpc" },
             "CidrBlock": "192.168.1.0/24",
           }
@@ -124,6 +124,30 @@
                 "VpcId" : { "Ref": "myvpc" }
             }
         },
+        "priRT": 
+        {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": 
+          {
+            "VpcId": { "Ref": "myvpc" },
+          }
+        },
+        "prisubRTAss": {
+          "Type": "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties": 
+          {
+            "SubnetId": { "Ref": "prisubnet" },
+            "RouteTableId": { "Ref": "priRT" }
+          }
+        },
+        "routeTableAssocName": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": 
+            {
+              "SubnetId": { "Ref": "mysubnet" },
+              "RouteTableId": { "Ref": "newRT" }  
+            }
+          },
         "routetableentries": 
         {
           "Type": "AWS::EC2::Route",
@@ -132,14 +156,6 @@
             "RouteTableId": { "Ref": "newRT" },
             "DestinationCidrBlock": "0.0.0.0/0",
             "GatewayId": { "Ref": "igw" }  
-          }
-        },
-        "routeTableAssocName": {
-          "Type": "AWS::EC2::SubnetRouteTableAssociation",
-          "Properties": 
-          {
-            "SubnetId": { "Ref": "mysubnet" },
-            "RouteTableId": { "Ref": "newRT" }  
           }
         },
         "awsec2": 
@@ -155,6 +171,29 @@
                 "SecurityGroupIds" : [{ "Ref": "mysg" }],
                 "SubnetId" :  { "Ref": "mysubnet" }
             }
+        },
+        "awsdbins": 
+        {
+          "Type": "AWS::RDS::DBInstance",
+          "Properties": 
+          {
+            "AllocatedStorage": "20GB",
+            "DBInstanceClass": "db.t2.micro",
+            "AllowMajorVersionUpgrade": false,
+            "AutoMinorVersionUpgrade": true,
+            "AvailabilityZone": "us-east-2b",
+            "DBInstanceIdentifier" :"practest",
+            "DBName": "test",
+            "DBSecurityGroups": [ "" ],
+            "Engine": "MySQL",
+            "EngineVersion": "5.7.22",
+            "MasterUsername": "dbtester",
+            "MasterUserPassword": "firefox123",
+            "MultiAZ": false,
+            "Port": "3306",
+            "PubliclyAccessible": true,
+            "VPCSecurityGroups": { "Ref": "myvpc" }
+          }
         }
     },
     "Outputs":
